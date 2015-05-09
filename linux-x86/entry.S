@@ -1,6 +1,7 @@
 .text
 .globl _start
 .extern _lsc_start
+.extern _lsc_init_ptr
 _start:
 	xorl %ebp, %ebp
 	movl %esp, _lsc_init_ptr(,1)
@@ -14,25 +15,33 @@ _start:
 .globl _lsc_syscall2
 .globl _lsc_syscall1
 .globl _lsc_syscall0
+
 _lsc_syscall5:
-	movl 28(%esp), %edi
+	xchgl 24(%esp), %edi
 _lsc_syscall4:
-	movl 24(%esp), %esi
-_lsc_syscall3:
-	movl 20(%esp), %edx
-_lsc_syscall2:
-	movl 16(%esp), %ecx
-_lsc_syscall1:
-	movl 12(%esp), %ebx
-_lsc_syscall0:
-	movl 8(%esp), %eax
-	xchgl 4(%esp), %ebp
-	call *%ebp
-	movl 4(%esp), %ebp
+	xchgl 20(%esp), %esi
+	movl 16(%esp), %edx
+	movl 12(%esp), %ecx
+	xchgl 8(%esp), %ebx
+	movl 4(%esp), %eax
+	call *_lsc_vdso_ptr(,1)
+	movl 20(%esp), %esi
+	movl 24(%esp), %edi
 	# pass %eax out
 	ret
 
-.data
-.globl _lsc_init_ptr
-_lsc_init_ptr:
-	.zero 4
+_lsc_syscall3:
+	movl 16(%esp), %edx
+_lsc_syscall2:
+	movl 12(%esp), %ecx
+_lsc_syscall1:
+	xchg 8(%esp), %ebx
+	movl 4(%esp), %eax
+	call *_lsc_vdso_ptr(,1)
+	movl 8(%esp), %ebx
+	# pass %eax out
+	ret
+
+_lsc_syscall0:
+	movl 4(%esp), %eax
+	jmp *_lsc_vdso_ptr(,1)

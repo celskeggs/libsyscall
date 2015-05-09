@@ -1,0 +1,21 @@
+#ifndef _LIBSYSCALL_H
+#define _LIBSYSCALL_H
+
+// 32-bit only for this header
+_Static_assert(sizeof(int) == 4, "int must be 32 bits");
+_Static_assert(sizeof(void*) == 4, "pointer must be 32 bits");
+
+extern unsigned int _lsc_argc;
+extern char **_lsc_argv;
+extern char **_lsc_env;
+
+extern int _lsc_syscall0(int eax);
+extern int _lsc_syscall1(int eax, int ebx);
+extern int _lsc_syscall2(int eax, int ebx, int ecx);
+extern int _lsc_syscall3(int eax, int ebx, int ecx, int edx);
+extern int _lsc_syscall4(int eax, int ebx, int ecx, int edx, int esi);
+extern int _lsc_syscall5(int eax, int ebx, int ecx, int edx, int esi, int edi);
+
+/* FOOTER */
+
+#endif
