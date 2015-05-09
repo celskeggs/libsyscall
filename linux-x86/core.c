@@ -1,6 +1,9 @@
 // 32-bit x86 only
 
-#include <stdint.h>
+_Static_assert(sizeof(int) == 4, "int must be 32 bits");
+_Static_assert(sizeof(void*) == 4, "pointer must be 32 bits");
+
+#define NULL ((void*) 0)
 
 #define AT_NULL         0               /* End of vector */
 #define AT_IGNORE       1               /* Entry should be ignored */
@@ -22,25 +25,28 @@
 #define AT_SYSINFO      32
 #define AT_SYSINFO_EHDR 33
 
+typedef unsigned int uint32_t;
+
 extern uint32_t *_lsc_init_ptr;
-static void *_lsc_vdso_ptr = NULL;
+void *_lsc_vdso_ptr = NULL;
 static uint32_t _lsc_argc;
 static char **_lsc_argv;
+static uint32_t *_lsc_env;
 static uint32_t *_lsc_auxv;
 static char *should_be_null;
 
 // must not return
 void _lsc_start() {
 	_lsc_argc = *_lsc_init_ptr;
-	_lsc_argv = _lsc_init_ptr + 1;
-	should_be_null = _lsc_argv[argc];
-	_lsc_env = _lsc_init_ptr + 2 + argc;
+	_lsc_argv = (char **) (_lsc_init_ptr + 1);
+	should_be_null = _lsc_argv[_lsc_argc];
+	_lsc_env = _lsc_init_ptr + 2 + _lsc_argc;
 	uint32_t *cur = _lsc_env;
-	while (*(cur++) != NULL);
+	while (*(cur++) != 0);
 	_lsc_auxv = cur;
 	while (*(cur) != AT_NULL) {
 		if (*(cur++) == AT_SYSINFO) {
-			_lsc_vdso_ptr = *(cur++);
+			_lsc_vdso_ptr = (void*) *(cur++);
 			break;
 		}
 	}
