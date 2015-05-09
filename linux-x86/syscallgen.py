@@ -23,6 +23,12 @@ h_noreturn = Template("""
 extern void lsc_$name($args) __attribute__((noreturn));
 """)
 
+def rawify_argument(arg):
+	raw = arg.split(" ")[-1].strip()
+	if raw[0] == "*":
+		raw = "(int) " + raw[1:]
+	return raw
+
 with open("syscalls.tab", "r") as f:
 	with open("syscall.c", "w") as c:
 		with open("libsyscall.h", "w") as h:
@@ -44,7 +50,7 @@ with open("syscalls.tab", "r") as f:
 				mapping = {"name": name, "num": num}
 				mapping["argc"] = len(args)
 				mapping["args"] = ", ".join(args) or "void"
-				mapping["args_raw"] = "".join(", " + arg.split(" ")[-1] for arg in args)
+				mapping["args_raw"] = "".join(", " + rawify_argument(arg) for arg in args)
 
 				c.write((c_noreturn if noreturn else c_normal).substitute(mapping))
 				h.write((h_noreturn if noreturn else h_normal).substitute(mapping))
