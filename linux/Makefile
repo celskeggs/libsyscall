@@ -1,6 +1,7 @@
-MAIN: test
 
-include bits
+ifdef BITS
+
+main: test
 CFLAGS=-O3 -m$(BITS) -nostdlib -nostdinc -fno-asynchronous-unwind-tables -ffreestanding
 
 libsyscall.h syscall.c: syscallgen.py syscalls.tab.$(BITS) libsyscall.h.base.$(BITS) syscall.c.base
@@ -16,5 +17,13 @@ libsyscall.a: core.o entry.o syscall.o
 test: libsyscall.a test.c
 	gcc $(CFLAGS) test.c libsyscall.a -o test
 	strip -s -R .comment test
+
+else
+
+main:
+	@echo 'BITS must be set!'
+	@exit 1
+
+endif
 clean:
 	rm -f syscall.o core.o entry.o test syscall.c libsyscall.h libsyscall.a
