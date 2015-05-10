@@ -1,6 +1,6 @@
 MAIN: test
 
-CFLAGS=-m64 -nostdlib -nostdinc -fno-asynchronous-unwind-tables -ffreestanding -ggdb
+CFLAGS=-O3 -m64 -nostdlib -nostdinc -fno-asynchronous-unwind-tables -ffreestanding -ggdb
 
 libsyscall.h syscall.c: syscallgen.py syscalls.tab libsyscall.h.base syscall.c.base
 	python syscallgen.py
@@ -14,5 +14,6 @@ libsyscall.a: core.o entry.o syscall.o
 	ar rcs libsyscall.a core.o entry.o syscall.o
 test: libsyscall.a test.c
 	gcc $(CFLAGS) test.c libsyscall.a -o test
+	strip -s -R .comment test
 clean:
 	rm -f syscall.o core.o entry.o test syscall.c libsyscall.h libsyscall.a

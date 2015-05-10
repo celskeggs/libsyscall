@@ -14,7 +14,6 @@ libsyscall.a: core.o entry.o syscall.o
 	ar rcs libsyscall.a core.o entry.o syscall.o
 test: libsyscall.a test.c
 	gcc $(CFLAGS) test.c libsyscall.a -o test
-#	ld -melf_i386 core.o entry.o syscall.o -o core
-#	strip -s -R .comment core
+	strip -s -R .comment test
 clean:
 	rm -f syscall.o core.o entry.o test syscall.c libsyscall.h libsyscall.a
