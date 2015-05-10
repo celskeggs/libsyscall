@@ -1,0 +1,6 @@
+core.o
+entry.o
+syscall.o
+libsyscall.a
+syscall.c
+libsyscall.h
