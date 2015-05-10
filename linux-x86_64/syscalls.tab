@@ -1,0 +1,4 @@
+read, 0, unsigned int fd, char *buf, unsigned long count
+write, 1, unsigned int fd, const char *buf, unsigned long count
+fork, 57
+exit, noreturn, 60, int error_code
