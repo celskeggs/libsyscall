@@ -1,1 +1,1 @@
-#include "libsyscall.h"
+../common/syscall.c.base

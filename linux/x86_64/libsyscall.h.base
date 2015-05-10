@@ -6,14 +6,19 @@ _Static_assert(sizeof(int) == 4, "int must be 32 bits");
 _Static_assert(sizeof(long) == 8, "long must be 64 bits");
 _Static_assert(sizeof(void*) == 8, "pointer must be 64 bits");
 
+typedef long lsc_int_t;
+typedef unsigned long lsc_uint_t;
+#define LSC_LINUX
+#define LSC_64BIT
+
 // "revsyscall" because the arguments ~almost~ match up with the syscall arguments if I don't have rax at the start of the list.
-extern long _lsc_revsyscall0(long rax);
-extern long _lsc_revsyscall1(long rdi, long rax);
-extern long _lsc_revsyscall2(long rdi, long rsi, long rax);
-extern long _lsc_revsyscall3(long rdi, long rsi, long rdx, long rax);
-extern long _lsc_revsyscall4(long rdi, long rsi, long rdx, long r10, long rax);
-extern long _lsc_revsyscall5(long rdi, long rsi, long rdx, long r10, long r8, long rax);
-extern long _lsc_revsyscall6(long rdi, long rsi, long rdx, long r10, long r8, long r9, long rax);
+extern lsc_int_t _lsc_revsyscall0(lsc_int_t rax);
+extern lsc_int_t _lsc_revsyscall1(lsc_int_t rdi, lsc_int_t rax);
+extern lsc_int_t _lsc_revsyscall2(lsc_int_t rdi, lsc_int_t rsi, lsc_int_t rax);
+extern lsc_int_t _lsc_revsyscall3(lsc_int_t rdi, lsc_int_t rsi, lsc_int_t rdx, lsc_int_t rax);
+extern lsc_int_t _lsc_revsyscall4(lsc_int_t rdi, lsc_int_t rsi, lsc_int_t rdx, lsc_int_t r10, lsc_int_t rax);
+extern lsc_int_t _lsc_revsyscall5(lsc_int_t rdi, lsc_int_t rsi, lsc_int_t rdx, lsc_int_t r10, lsc_int_t r8, lsc_int_t rax);
+extern lsc_int_t _lsc_revsyscall6(lsc_int_t rdi, lsc_int_t rsi, lsc_int_t rdx, lsc_int_t r10, lsc_int_t r8, lsc_int_t r9, lsc_int_t rax);
 
 #define _lsc_syscall0(rax) _lsc_revsyscall0(rax)
 #define _lsc_syscall1(rax, rdi) _lsc_revsyscall1(rdi, rax)
@@ -23,9 +28,9 @@ extern long _lsc_revsyscall6(long rdi, long rsi, long rdx, long r10, long r8, lo
 #define _lsc_syscall5(rax, rdi, rsi, rdx, r10, r8) _lsc_revsyscall5(rdi, rsi, rdx, r10, r8, rax)
 #define _lsc_syscall6(rax, rdi, rsi, rdx, r10, r8, r9) _lsc_revsyscall6(rdi, rsi, rdx, r10, r8, r9, rax)
 
-extern int _lsc_client_main(unsigned long argc, char **argv, char **env);
+extern int _lsc_client_main(lsc_uint_t argc, char **argv, char **env);
 
-#define LSC_MAIN(argc, argv, env) int _lsc_client_main(unsigned long argc, char **argv, char **env)
+#define LSC_MAIN(argc, argv, env) int _lsc_client_main(lsc_uint_t argc, char **argv, char **env)
 
 /* FOOTER */
 

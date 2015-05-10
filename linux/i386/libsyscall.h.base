@@ -5,16 +5,21 @@
 _Static_assert(sizeof(int) == 4, "int must be 32 bits");
 _Static_assert(sizeof(void*) == 4, "pointer must be 32 bits");
 
-extern int _lsc_syscall0(int eax);
-extern int _lsc_syscall1(int eax, int ebx);
-extern int _lsc_syscall2(int eax, int ebx, int ecx);
-extern int _lsc_syscall3(int eax, int ebx, int ecx, int edx);
-extern int _lsc_syscall4(int eax, int ebx, int ecx, int edx, int esi);
-extern int _lsc_syscall5(int eax, int ebx, int ecx, int edx, int esi, int edi);
+typedef int lsc_int_t;
+typedef unsigned int lsc_uint_t;
+#define LSC_LINUX
+#define LSC_32BIT
 
-extern int _lsc_client_main(unsigned int argc, char **argv, char **env);
+extern lsc_int_t _lsc_syscall0(lsc_int_t eax);
+extern lsc_int_t _lsc_syscall1(lsc_int_t eax, lsc_int_t ebx);
+extern lsc_int_t _lsc_syscall2(lsc_int_t eax, lsc_int_t ebx, lsc_int_t ecx);
+extern lsc_int_t _lsc_syscall3(lsc_int_t eax, lsc_int_t ebx, lsc_int_t ecx, lsc_int_t edx);
+extern lsc_int_t _lsc_syscall4(lsc_int_t eax, lsc_int_t ebx, lsc_int_t ecx, lsc_int_t edx, lsc_int_t esi);
+extern lsc_int_t _lsc_syscall5(lsc_int_t eax, lsc_int_t ebx, lsc_int_t ecx, lsc_int_t edx, lsc_int_t esi, lsc_int_t edi);
 
-#define LSC_MAIN(argc, argv, env) int _lsc_client_main(unsigned int argc, char **argv, char **env)
+extern int _lsc_client_main(lsc_uint_t argc, char **argv, char **env);
+
+#define LSC_MAIN(argc, argv, env) int _lsc_client_main(lsc_uint_t argc, char **argv, char **env)
 
 /* FOOTER */
 

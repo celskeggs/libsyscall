@@ -1,1 +1,1 @@
-../test/test.c
+../common/test.c
