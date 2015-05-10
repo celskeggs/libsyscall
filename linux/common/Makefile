@@ -3,14 +3,14 @@ MAIN: test
 include bits
 CFLAGS=-O3 -m$(BITS) -nostdlib -nostdinc -fno-asynchronous-unwind-tables -ffreestanding
 
-libsyscall.h syscall.c: syscallgen.py syscalls.tab libsyscall.h.base syscall.c.base
-	python syscallgen.py
+libsyscall.h syscall.c: syscallgen.py syscalls.tab.$(BITS) libsyscall.h.base.$(BITS) syscall.c.base
+	python syscallgen.py libsyscall.h.base.$(BITS) syscalls.tab.$(BITS)
 core.o: core.c auxv.h libsyscall.h
 	gcc $(CFLAGS) core.c -c -o core.o
 syscall.o: syscall.c libsyscall.h
 	gcc $(CFLAGS) syscall.c -c -o syscall.o
-entry.o: entry.S
-	as --$(BITS) entry.S -o entry.o
+entry.o: entry.$(BITS).S
+	as --$(BITS) entry.$(BITS).S -o entry.o
 libsyscall.a: core.o entry.o syscall.o
 	ar rcs libsyscall.a core.o entry.o syscall.o
 test: libsyscall.a test.c
