@@ -20,10 +20,10 @@ void _lsc_start(void) {
 	// _lsc_auxv not currently exported, but would be cur at this point.
 	while (1) {
 		if (*(cur++) == AT_SYSINFO) {
-			_lsc_vdso_ptr = (void*) *(cur++);
+			_lsc_vdso_ptr = (void*) *cur;
 			break;
 		}
-		if (*(cur) == AT_NULL) {
+		if (*(++cur) == AT_NULL) {
 			__builtin_trap(); // failed to find AT_SYSINFO... can't do syscalls!
 			__builtin_unreachable();
 		}

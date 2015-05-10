@@ -17,4 +17,4 @@ test: libsyscall.a test.c
 #	ld -melf_i386 core.o entry.o syscall.o -o core
 #	strip -s -R .comment core
 clean:
-	rm -f syscall.o core.o entry.o core syscall.c libsyscall.h
+	rm -f syscall.o core.o entry.o test syscall.c libsyscall.h libsyscall.a

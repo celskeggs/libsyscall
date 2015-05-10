@@ -25,6 +25,7 @@ _lsc_syscall4:
 	xchgl 8(%esp), %ebx
 	movl 4(%esp), %eax
 	call *_lsc_vdso_ptr(,1)
+	movl 8(%esp), %ebx
 	movl 20(%esp), %esi
 	movl 24(%esp), %edi
 	# pass %eax out
@@ -35,7 +36,7 @@ _lsc_syscall3:
 _lsc_syscall2:
 	movl 12(%esp), %ecx
 _lsc_syscall1:
-	xchg 8(%esp), %ebx
+	xchgl 8(%esp), %ebx
 	movl 4(%esp), %eax
 	call *_lsc_vdso_ptr(,1)
 	movl 8(%esp), %ebx
