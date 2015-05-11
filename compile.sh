@@ -7,7 +7,7 @@ mkdir built/
 if [ "$OS" = "Linux" ]
 then
 	cd linux
-	make
+	make $*
 	cd ../built
 	tar -xzf ../libsyscall.tar.gz
 	echo Finished compiling.

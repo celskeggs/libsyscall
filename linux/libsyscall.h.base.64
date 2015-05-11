@@ -28,6 +28,9 @@ extern lsc_int_t _lsc_revsyscall6(lsc_int_t rdi, lsc_int_t rsi, lsc_int_t rdx, l
 #define _lsc_syscall5(rax, rdi, rsi, rdx, r10, r8) _lsc_revsyscall5(rdi, rsi, rdx, r10, r8, rax)
 #define _lsc_syscall6(rax, rdi, rsi, rdx, r10, r8, r9) _lsc_revsyscall6(rdi, rsi, rdx, r10, r8, r9, rax)
 
+extern lsc_int_t lsc_deep_call(void (*target)(void *), void *param, void **saveaddr); // return true if returned normally; false if deep_return was used
+extern void lsc_deep_return(void *loadaddr) __attribute__((noreturn));
+
 extern int _lsc_client_main(lsc_uint_t argc, char **argv, char **env);
 
 #define LSC_MAIN(argc, argv, env) int _lsc_client_main(lsc_uint_t argc, char **argv, char **env)
