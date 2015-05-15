@@ -5,8 +5,8 @@ import sys
 assert(print) # make sure that python3 is in use
 
 c_normal = Template("""
-lsc_int_t lsc_$name($args) {
-	return _lsc_syscall$argc(__SYS_$name $args_raw);
+$return lsc_$name($args) {
+	return$cast _lsc_syscall$argc(__SYS_$name $args_raw);
 }
 """)
 c_noreturn = Template("""
@@ -18,7 +18,7 @@ void lsc_$name($args) {
 
 h_normal = Template("""
 #define __SYS_$name $num
-extern lsc_int_t lsc_$name($args);
+extern $return lsc_$name($args);
 """)
 h_noreturn = Template("""
 #define __SYS_$name $num
@@ -48,13 +48,20 @@ with open(sys.argv[2], "r") as f:
 				if not line.strip(): continue
 				name, num, *args = [seg.strip() for seg in line.split(",")]
 				noreturn = num.strip() == "noreturn"
+				ret_type, cast = "lsc_int_t", ""
 				if noreturn:
+					num, *args = args
+				elif not num.isdigit():
+					ret_type = num
+					cast = "(%s)" % num
 					num, *args = args
 
 				mapping = {"name": name, "num": num}
 				mapping["argc"] = len(args)
 				mapping["args"] = ", ".join(args) or "void"
 				mapping["args_raw"] = "".join(", " + rawify_argument(arg) for arg in args)
+				mapping["return"] = ret_type
+				mapping["cast"] = cast
 
 				c.write((c_noreturn if noreturn else c_normal).substitute(mapping))
 				h.write((h_noreturn if noreturn else h_normal).substitute(mapping))
