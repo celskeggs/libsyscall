@@ -1,6 +1,9 @@
-read, 0, unsigned int fd, char *buf, unsigned long count
-write, 1, unsigned int fd, const char *buf, unsigned long count
+read, 0, unsigned int fd, void *buf, unsigned long count
+write, 1, unsigned int fd, const void *buf, unsigned long count
+close, 3, unsigned int fd
+lseek, 8, unsigned int fd, unsigned long offset, unsigned int origin
 mmap, void *, 9, void *addr, unsigned long len, unsigned long prot, unsigned long flags, unsigned long fd, unsigned long off
 munmap, 11, void *addr, unsigned long len
 fork, 57
 exit, noreturn, 60, int error_code
+fsync, 74, unsigned int fd

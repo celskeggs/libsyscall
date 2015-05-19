@@ -10,7 +10,7 @@ endif
 
 ifdef BITS
 
-CFLAGS=-O3 -m$(BITS) -nostdlib -nostdinc -fno-asynchronous-unwind-tables -ffreestanding
+CFLAGS=-O3 -m$(BITS) -nostdlib -nostdinc -fno-asynchronous-unwind-tables -ffreestanding -Wall
 
 ../libsyscall.tar.gz: libsyscall.a libsyscall.h
 	tar -czf ../libsyscall.tar.gz libsyscall.a libsyscall.h
