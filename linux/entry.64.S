@@ -17,7 +17,7 @@ _start:
 .globl _lsc_revsyscall0
 
 _lsc_revsyscall6:
-	popq %rax
+	movq 8(%rsp), %rax
 	movq %rcx, %r10
 	# movq %r8, %r8
 	# movq %r9, %r9
