@@ -9,6 +9,7 @@ _start:
 	jmp _lsc_start
 
 .extern _lsc_vdso_ptr
+.globl _lsc_syscall6
 .globl _lsc_syscall5
 .globl _lsc_syscall4
 .globl _lsc_syscall3
@@ -16,9 +17,11 @@ _start:
 .globl _lsc_syscall1
 .globl _lsc_syscall0
 
+_lsc_syscall6:
 _lsc_syscall5:
-	xchgl 24(%esp), %edi
 _lsc_syscall4:
+	xchgl 28(%esp), %ebp
+	xchgl 24(%esp), %edi
 	xchgl 20(%esp), %esi
 	movl 16(%esp), %edx
 	movl 12(%esp), %ecx
@@ -28,6 +31,7 @@ _lsc_syscall4:
 	movl 8(%esp), %ebx
 	movl 20(%esp), %esi
 	movl 24(%esp), %edi
+	movl 28(%esp), %ebp
 	# pass %eax out
 	ret
 

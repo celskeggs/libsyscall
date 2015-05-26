@@ -16,6 +16,7 @@ extern lsc_int_t _lsc_syscall2(lsc_int_t eax, lsc_int_t ebx, lsc_int_t ecx);
 extern lsc_int_t _lsc_syscall3(lsc_int_t eax, lsc_int_t ebx, lsc_int_t ecx, lsc_int_t edx);
 extern lsc_int_t _lsc_syscall4(lsc_int_t eax, lsc_int_t ebx, lsc_int_t ecx, lsc_int_t edx, lsc_int_t esi);
 extern lsc_int_t _lsc_syscall5(lsc_int_t eax, lsc_int_t ebx, lsc_int_t ecx, lsc_int_t edx, lsc_int_t esi, lsc_int_t edi);
+extern lsc_int_t _lsc_syscall6(lsc_int_t eax, lsc_int_t ebx, lsc_int_t ecx, lsc_int_t edx, lsc_int_t esi, lsc_int_t edi, lsc_int_t ebp);
 
 extern lsc_int_t lsc_deep_call(void (*target)(void *), void *param, void **saveaddr); // return true if returned normally; false if deep_return was used
 extern void lsc_deep_return(void *loadaddr) __attribute__((noreturn));
