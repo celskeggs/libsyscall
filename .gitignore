@@ -1,2 +1,4 @@
 built
 libsyscall.tar.gz
+config.mk
+config.status

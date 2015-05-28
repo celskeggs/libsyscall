@@ -31,17 +31,21 @@ def rawify_argument(arg):
 		raw = "(lsc_int_t) " + raw[1:]
 	return raw
 
-assert len(sys.argv) == 3, "Bad number of arguments to syscallgen.py. Expects libsyscall.h.base and syscalls.tab"
+assert len(sys.argv) == 6, "Bad number of arguments to syscallgen.py. Expects libsyscall.h.base, syscalls.tab, syscall.c.base, libsyscall.h (out), and syscall.c (out)."
 
-with open(sys.argv[2], "r") as f:
-	with open("syscall.c", "w") as c:
-		with open("libsyscall.h", "w") as h:
-			with open(sys.argv[1], "r") as b:
+_, h_base, tab, c_base, h_out, c_out = sys.argv
+for k in "h_base, tab, c_base, h_out, c_out".split(", "):
+	print(k, locals()[k])
+
+with open(tab, "r") as f:
+	with open(c_out, "w") as c:
+		with open(h_out, "w") as h:
+			with open(h_base, "r") as b:
 				for line in b:
 					if line.strip() == "/* FOOTER */":
 						break # don't include the footer at the top
 					h.write(line)
-			with open("syscall.c.base", "r") as b:
+			with open(c_base, "r") as b:
 				for line in b:
 					c.write(line)
 			for line in f:
@@ -65,7 +69,7 @@ with open(sys.argv[2], "r") as f:
 
 				c.write((c_noreturn if noreturn else c_normal).substitute(mapping))
 				h.write((h_noreturn if noreturn else h_normal).substitute(mapping))
-			with open(sys.argv[1], "r") as b:
+			with open(h_base, "r") as b:
 				for line in b:
 					if line.strip() == "/* FOOTER */":
 						break

@@ -1,41 +1,33 @@
-ifndef BITS
-ARCH=$(shell uname -m)
-ifeq ($(ARCH),x86_64)
-BITS=64
-endif
-ifeq ($(ARCH),i686)
-BITS=32
-endif
-endif
+# we assume that we start in $(PSRCDIR), which is correct if invoked manually or via the master Makefile.
+include config.mk
 
-ifdef BITS
+CFLAGS=-O3 -m$(BITS) -Wall
+ALL_CFLAGS=-nostdlib -nostdinc -fno-asynchronous-unwind-tables -ffreestanding -I$(BUILDDIR) $(CFLAGS)
 
-CFLAGS=-O3 -m$(BITS) -nostdlib -nostdinc -fno-asynchronous-unwind-tables -ffreestanding -Wall
+OBJS_RAW=core.o entry.o syscall.o
+OBJS=$(addprefix $(BUILDDIR)/, $(OBJS_RAW))
 
-../libsyscall.tar.gz: libsyscall.a libsyscall.h
-	tar -czf ../libsyscall.tar.gz libsyscall.a libsyscall.h
+$(BUILDDIR)/libsyscall.a: $(OBJS)
+	ar rcs $@ $^
 
-libsyscall.a: core.o entry.o syscall.o
-	ar rcs libsyscall.a core.o entry.o syscall.o
+# the order of these arguments MATTER!
+$(BUILDDIR)/libsyscall.h $(BUILDDIR)/syscall.c: syscallgen.py libsyscall.h.base.$(BITS) syscalls.tab.$(BITS) syscall.c.base
+	python $^ $(BUILDDIR)/libsyscall.h $(BUILDDIR)/syscall.c
+$(BUILDDIR)/core.o: core.c auxv.h $(BUILDDIR)/libsyscall.h
+	gcc $(ALL_CFLAGS) $< -c -o $@
+$(BUILDDIR)/syscall.o: $(BUILDDIR)/syscall.c $(BUILDDIR)/libsyscall.h
+	gcc $(ALL_CFLAGS) $< -c -o $@
+$(BUILDDIR)/entry.o: entry.$(BITS).S
+	as --$(BITS) $^ -o $@
 
-libsyscall.h syscall.c: syscallgen.py syscalls.tab.$(BITS) libsyscall.h.base.$(BITS) syscall.c.base
-	python syscallgen.py libsyscall.h.base.$(BITS) syscalls.tab.$(BITS)
-core.o: core.c auxv.h libsyscall.h
-	gcc $(CFLAGS) core.c -c -o core.o
-syscall.o: syscall.c libsyscall.h
-	gcc $(CFLAGS) syscall.c -c -o syscall.o
-entry.o: entry.$(BITS).S
-	as --$(BITS) entry.$(BITS).S -o entry.o
-test: libsyscall.a test.c
-	gcc $(CFLAGS) test.c libsyscall.a -o test
-	strip -s -R .comment test
+$(BUILDDIR)/test-prog: test.c $(BUILDDIR)/libsyscall.a
+	gcc $(ALL_CFLAGS) $^ -o $@
+	strip -s -R .comment $@
 
-else
+.PHONY: clean test
 
-main:
-	@echo 'BITS must be set!'
-	@exit 1
+test: $(BUILDDIR)/test-prog
+	$@
 
-endif
 clean:
-	rm -f syscall.o core.o entry.o test syscall.c libsyscall.h libsyscall.a
+	rm -f $(OBJS) $(BUILDDIR)/test-prog $(BUILDDIR)/syscall.c $(BUILDDIR)/libsyscall.h $(BUILDDIR)/libsyscall.a

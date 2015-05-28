@@ -1,0 +1,100 @@
+#!/usr/bin/env python3
+import argparse, os
+
+parser = argparse.ArgumentParser(description='Configure libsyscall')
+parser.add_argument('--srcdir')
+parser.add_argument('--prefix', default="/usr/local")
+parser.add_argument('--exec_prefix')
+parser.add_argument('--includedir')
+parser.add_argument('--libdir')
+parser.add_argument('--build')
+parser.add_argument('--host')
+parser.add_argument('--bits', type=int, choices=(32, 64))
+parser.add_argument('--builddir')
+parser.add_argument('arguments', nargs='*')
+
+args = parser.parse_args()
+
+km = {}
+
+# SOURCE DIRECTORY
+def is_valid_srcdir(x):
+	return os.path.exists(os.path.join(x, "linux")) # TODO: something better
+if args.srcdir:
+	srcdir = args.srcdir
+else:
+	if is_valid_srcdir("."):
+		srcdir = "."
+	else:
+		srcdir = ".."
+srcdir = os.path.abspath(srcdir)
+assert is_valid_srcdir(srcdir), "Invalid source directory!"
+km["srcdir"] = srcdir
+
+# PREFIXES AND FOLDERS
+prefix = os.path.abspath(args.prefix)
+km["prefix"] = prefix
+exec_prefix = os.path.abspath(args.exec_prefix or prefix)
+km["exec-prefix"] = exec_prefix
+km["includedir"] = os.path.abspath(args.includedir or os.path.join(prefix, "include"))
+km["libdir"] = os.path.abspath(args.libdir or os.path.join(exec_prefix, "lib"))
+if args.builddir:
+	km["builddir"] = os.path.abspath(args.builddir)
+	assert os.path.exists(km["builddir"]), "builddir must exist!"
+
+# BUILD TARGETS
+build = args.host or args.build # host overrides build, I think?
+for arg in args.arguments:
+	if "=" in arg:
+		key, value = arg.split("=", 1)
+		km[key.lower()] = value
+	else:
+		assert arg == None, "Unknown purpose with argument: %s" % arg
+		build = arg
+if build != None:
+	km["build-target"] = build
+
+def triplet_to_caplatform(target):
+	target = target.lower().split("-")
+	if "linux" in target:
+		if "i386" in target or "i686" in target:
+			return "linux-32"
+		elif "x86_64" in target:
+			return "linux-64"
+		# TODO: handle a lot more stuff in here!
+	raise Exception("Cannot detect platform from triplet (%s)!" % target)
+def guess_caplatform():
+	with os.popen("uname -som") as x:
+		info = x.readline().lower()
+	if "linux" in info and "x86_64" in info:
+		return "linux-64"
+	elif "linux" in info and ("i386" in info or "i686" in info):
+		return "linux-32"
+	raise Exception("Cannot detect platform from uname -som (%s)!" % info)
+
+if "caplatform" not in km and ("bits" not in km or "platform" not in km):
+	km["caplatform"] = triplet_to_caplatform(km["build-target"]) if "build-target" in km else guess_caplatform()
+p, b = km["caplatform"].split("-")
+if "bits" not in km:
+	km["bits"] = args.bits or b
+if "platform" not in km:
+	km["platform"] = p
+
+assert os.path.exists(os.path.join(srcdir, km["platform"])), "Platform sources not found for: %s" % km["platform"]
+
+if "psrcdir" not in km:
+	km["psrcdir"] = os.path.join(km["srcdir"], km["platform"])
+if "builddir" not in km:
+	km["builddir"] = km["psrcdir"]
+
+with open("config.status", "w") as f:
+	configmk = (os.path.join(km["psrcdir"], "config.mk"), "config.mk")
+	f.write("#!/bin/sh\n")
+	f.write("tee %s %s <<EOF\n" % configmk)
+	for k, v in sorted(km.items(), key=lambda x:x[0]):
+		f.write("%s=%s\n" % (k.upper(), v.replace('$', '$$')))
+	f.write("EOF\n")
+	f.write("echo Regenerated %s and %s. 1>&2\n" % configmk)
+
+assert os.system("chmod +x ./config.status") == 0, "chmodding config.status failed"
+assert os.system("./config.status") == 0, "config.status failed"
