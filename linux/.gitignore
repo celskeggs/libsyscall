@@ -4,3 +4,5 @@ syscall.o
 libsyscall.a
 syscall.c
 libsyscall.h
+test-prog
+test-results
