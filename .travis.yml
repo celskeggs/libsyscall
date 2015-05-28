@@ -1,3 +1,8 @@
 language: c
+install:
+  - which python || true
+  - which python3 || true
+  - python --version
+
 python:
   - "3.4"
