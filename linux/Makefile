@@ -12,7 +12,7 @@ $(BUILDDIR)/libsyscall.a: $(OBJS)
 
 # the order of these arguments MATTER!
 $(BUILDDIR)/libsyscall.h $(BUILDDIR)/syscall.c: syscallgen.py libsyscall.h.base.$(BITS) syscalls.tab.$(BITS) syscall.c.base
-	python $^ $(BUILDDIR)/libsyscall.h $(BUILDDIR)/syscall.c
+	python3 $^ $(BUILDDIR)/libsyscall.h $(BUILDDIR)/syscall.c
 $(BUILDDIR)/core.o: core.c auxv.h $(BUILDDIR)/libsyscall.h
 	gcc $(ALL_CFLAGS) $< -c -o $@
 $(BUILDDIR)/syscall.o: $(BUILDDIR)/syscall.c $(BUILDDIR)/libsyscall.h
