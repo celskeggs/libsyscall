@@ -1,1 +1,3 @@
 language: c
+python:
+  - "3.4"
