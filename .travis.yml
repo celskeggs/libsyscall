@@ -1,7 +1,9 @@
 language: c
 
+sudo: true
+
 install:
-  - apt-get install python3
+  - sudo apt-get install python3
 
 python:
   - "3.4"
