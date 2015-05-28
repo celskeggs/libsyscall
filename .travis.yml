@@ -1,8 +1,7 @@
 language: c
+
 install:
-  - which python || true
-  - which python3 || true
-  - python --version
+  - apt-get install python3
 
 python:
   - "3.4"
