@@ -27,7 +27,9 @@ $(BUILDDIR)/test-prog: test.c $(BUILDDIR)/libsyscall.a
 .PHONY: clean test
 
 test: $(BUILDDIR)/test-prog
-	$@
+	($<; echo $$?) 2>&1 | tee $(BUILDDIR)/test-results
+	cmp $(BUILDDIR)/test-results expected-test-results
+	@echo "Passed minimal tests!"
 
 clean:
-	rm -f $(OBJS) $(BUILDDIR)/test-prog $(BUILDDIR)/syscall.c $(BUILDDIR)/libsyscall.h $(BUILDDIR)/libsyscall.a
+	rm -f $(OBJS) $(BUILDDIR)/test-prog $(BUILDDIR)/syscall.c $(BUILDDIR)/libsyscall.h $(BUILDDIR)/libsyscall.a $(BUILDDIR)/test-results
