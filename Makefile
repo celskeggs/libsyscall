@@ -3,6 +3,9 @@ include config.mk
 .PHONY: main test clean
 
 main:
+	which python || true
+	which python3 || true
+	python --version
 	cd $(PSRCDIR) && make
 
 test:
