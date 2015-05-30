@@ -86,6 +86,8 @@ if "psrcdir" not in km:
 	km["psrcdir"] = os.path.join(km["srcdir"], km["platform"])
 if "builddir" not in km:
 	km["builddir"] = km["psrcdir"]
+if "cc" not in km:
+	km["cc"] = os.getenv("CC") or "gcc"
 
 with open("config.status", "w") as f:
 	configmk = (os.path.join(km["psrcdir"], "config.mk"), "config.mk")

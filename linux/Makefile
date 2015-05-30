@@ -14,14 +14,14 @@ $(BUILDDIR)/libsyscall.a: $(OBJS)
 $(BUILDDIR)/libsyscall.h $(BUILDDIR)/syscall.c: syscallgen.py libsyscall.h.base.$(BITS) syscalls.tab.$(BITS) syscall.c.base
 	python3 $^ $(BUILDDIR)/libsyscall.h $(BUILDDIR)/syscall.c
 $(BUILDDIR)/core.o: core.c auxv.h $(BUILDDIR)/libsyscall.h
-	gcc $(ALL_CFLAGS) $< -c -o $@
+	$(CC) $(ALL_CFLAGS) $< -c -o $@
 $(BUILDDIR)/syscall.o: $(BUILDDIR)/syscall.c $(BUILDDIR)/libsyscall.h
-	gcc $(ALL_CFLAGS) $< -c -o $@
+	$(CC) $(ALL_CFLAGS) $< -c -o $@
 $(BUILDDIR)/entry.o: entry.$(BITS).S
 	as --$(BITS) $^ -o $@
 
 $(BUILDDIR)/test-prog: test.c $(BUILDDIR)/libsyscall.a
-	gcc $(ALL_CFLAGS) $^ -o $@
+	$(CC) $(ALL_CFLAGS) $^ -o $@
 	strip -s -R .comment $@
 
 .PHONY: clean test
