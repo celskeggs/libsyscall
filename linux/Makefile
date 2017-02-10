@@ -33,6 +33,8 @@ test: $(BUILDDIR)/test-prog
 	@echo "Passed minimal tests!"
 
 install: $(BUILDDIR)/libsyscall.a $(BUILDDIR)/libsyscall.h
+	install -m 755 -d $(DESTDIR)/$(LIBDIR)
+	install -m 755 -d $(DESTDIR)/$(INCLUDEDIR)
 	install -m 644 $(BUILDDIR)/libsyscall.a $(DESTDIR)/$(LIBDIR)/libsyscall.a
 	install -m 644 $(BUILDDIR)/libsyscall.h $(DESTDIR)/$(INCLUDEDIR)/libsyscall.h
 
