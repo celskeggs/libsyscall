@@ -8,4 +8,5 @@ lseek, 19, unsigned int fd, signed int offset, unsigned int origin
 munmap, 91, void *addr, unsigned long length
 wait4, 114, int pid, unsigned int *stat_addr, int options, void *ru
 fsync, 118, unsigned int fd
+mremap, void *, 163, void *old_address, size_t old_size, size_t new_size, int flags, void *new_address
 mmap2, void *, 192, void *addr, unsigned long len, unsigned long prot, unsigned long flags, unsigned long fd, unsigned long pgoff

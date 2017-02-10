@@ -4,6 +4,7 @@ close, 3, unsigned int fd
 lseek, 8, unsigned int fd, unsigned long offset, unsigned int origin
 mmap, void *, 9, void *addr, unsigned long len, unsigned long prot, unsigned long flags, unsigned long fd, unsigned long off
 munmap, 11, void *addr, unsigned long len
+mremap, 25, void *addr, unsigned long old_len, unsigned long new_len, unsigned long flags, unsigned long new_addr
 fork, 57
 execve, 59, const char *filename, const char * const *params, const char * const *envp
 exit, noreturn, 60, int error_code
