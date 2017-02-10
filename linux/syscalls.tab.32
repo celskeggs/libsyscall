@@ -5,6 +5,8 @@ write, 4, unsigned int fd, const void *buf, unsigned int count
 close, 6, unsigned int fd
 execve, 11, const char *filename, const char * const *params, const char * const *envp
 lseek, 19, unsigned int fd, signed int offset, unsigned int origin
+kill, 37, int pid, int sig
+brk, 45, void *addr
 munmap, 91, void *addr, unsigned long length
 wait4, 114, int pid, unsigned int *stat_addr, int options, void *ru
 fsync, 118, unsigned int fd
