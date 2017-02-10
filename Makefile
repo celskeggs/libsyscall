@@ -5,6 +5,9 @@ include config.mk
 main:
 	cd $(PSRCDIR) && make
 
+install:
+	cd $(PSRCDIR) && make install
+
 test:
 	cd $(PSRCDIR) && make test
 

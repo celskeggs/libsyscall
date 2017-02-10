@@ -3,6 +3,7 @@ include config.mk
 
 CFLAGS=-O3 -m$(BITS) -Wall
 ALL_CFLAGS=-nostdlib -nostdinc -fno-asynchronous-unwind-tables -ffreestanding -I$(BUILDDIR) $(CFLAGS)
+DESTDIR=
 
 OBJS_RAW=core.o entry.o syscall.o
 OBJS=$(addprefix $(BUILDDIR)/, $(OBJS_RAW))
@@ -30,6 +31,10 @@ test: $(BUILDDIR)/test-prog
 	($<; echo $$?) 2>&1 | tee $(BUILDDIR)/test-results
 	cmp $(BUILDDIR)/test-results expected-test-results
 	@echo "Passed minimal tests!"
+
+install: $(BUILDDIR)/libsyscall.a $(BUILDDIR)/libsyscall.h
+	install -m 644 $(BUILDDIR)/libsyscall.a $(DESTDIR)/$(LIBDIR)/libsyscall.a
+	install -m 644 $(BUILDDIR)/libsyscall.h $(DESTDIR)/$(INCLUDEDIR)/libsyscall.h
 
 clean:
 	rm -f $(OBJS) $(BUILDDIR)/test-prog $(BUILDDIR)/syscall.c $(BUILDDIR)/libsyscall.h $(BUILDDIR)/libsyscall.a $(BUILDDIR)/test-results
