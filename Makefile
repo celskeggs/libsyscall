@@ -1,6 +1,6 @@
 include config.mk
 
-.PHONY: main test clean
+.PHONY: main install test clean
 
 main:
 	cd $(PSRCDIR) && make

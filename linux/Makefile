@@ -25,7 +25,7 @@ $(BUILDDIR)/test-prog: test.c $(BUILDDIR)/libsyscall.a
 	$(CC) $(ALL_CFLAGS) $^ -o $@
 	strip -s -R .comment $@
 
-.PHONY: clean test
+.PHONY: clean test install
 
 test: $(BUILDDIR)/test-prog
 	($<; echo $$?) 2>&1 | tee $(BUILDDIR)/test-results
