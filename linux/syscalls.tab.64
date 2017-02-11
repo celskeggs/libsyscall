@@ -6,9 +6,11 @@ mmap, void *, 9, void *addr, unsigned long len, unsigned long prot, unsigned lon
 munmap, 11, void *addr, unsigned long len
 brk, 12, void *addr
 mremap, void *, 25, void *addr, unsigned long old_len, unsigned long new_len, unsigned long flags, void *new_addr
+getpid, 39
 fork, 57
 execve, 59, const char *filename, const char * const *params, const char * const *envp
 exit, noreturn, 60, int error_code
 wait4, 61, int pid, unsigned int *stat_addr, int options, void *ru
 kill, 62, int pid, int sig
 fsync, 74, unsigned int fd
+getppid, 110
